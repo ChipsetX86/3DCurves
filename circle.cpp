@@ -20,11 +20,26 @@ TDCurves::Point TDCurves::Circle::value(const double t)
     return r;
 }
 
-TDCurves::Point TDCurves::Circle::derivative(const double t)
+TDCurves::Vector TDCurves::Circle::derivative(const double t)
 {
-    Point r;
+    Vector r;
     r.x = radius() * sin(t) * -1.f;
     r.y = radius() * cos(t);
     r.z = 0;
     return r;
 }
+
+bool TDCurves::Circle::setRadius(const double radius)
+{
+    if (radius <= 0) {
+        return false;
+    }
+    m_radius = radius;
+    return true;
+}
+
+double TDCurves::Circle::radius() const
+{
+    return m_radius;
+}
+

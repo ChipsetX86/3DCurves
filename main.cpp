@@ -1,5 +1,3 @@
-#include <QCoreApplication>
-
 #include <random>
 #include <iostream>
 #include <iomanip>
@@ -23,15 +21,17 @@ int main(int argc, char *argv[])
     std::mt19937 gen(rd());
     std::uniform_real_distribution<double> distr(0.01f, 3.f);
 
+
     for (auto it = v.begin(); it != v.end(); ++it) {
         auto randValue = distr(gen);
         if (randValue >=0 && randValue < 1) {
-            (*it).reset(new Circle());
-            (*it)->setRadius(distr(gen));
+            auto c = new Circle();
+            c->setRadius(distr(gen));
+            (*it).reset(c);
         } else if (randValue >=1 && randValue < 2) {
             auto e = new Ellipse();
-            e->setRadius(distr(gen));
-            e->setRadius2(distr(gen));
+            e->setRadiusOX(distr(gen));
+            e->setRadiusOY(distr(gen));
             (*it).reset(e);
         } else {
             auto h = new Helixe();
@@ -42,32 +42,36 @@ int main(int argc, char *argv[])
     }
 
     for (auto it = v.begin(); it != v.end(); ++it) {
-        Point t = (*it)->value(acos(-1.0f) / 4.f);
+        Point t = (*it)->value(acos(-1.0f) / 4);
         cout << std::fixed << std::setprecision(2)
              << "Value: " << t.x << " " << t.y << " " << t.z << std::endl;
-        t = (*it)->derivative(acos(-1.0f) / 4.f);
+        Vector v = (*it)->derivative(acos(-1.0f) / 4);
         cout << std::fixed << std::setprecision(2)
-             << "Derivative: " << t.x << " " << t.y << " " << t.z << std::endl;
+             << "Derivative: " << v.x << " " << v.y << " " << v.z << std::endl;
 
     }
 
-    vector<shared_ptr<Curve>> vCircle;
+    vector<Circle*> vCircle;
     for (auto it = v.begin(); it != v.end(); ++it) {
         Circle* circle = dynamic_cast<Circle*>((*it).get());
         if (circle) {
-            shared_ptr<Curve> s((*it));
-            vCircle.push_back(s);
+            vCircle.push_back(circle);
         }
     }
 
-    sort(vCircle.begin(), vCircle.end(), [](const shared_ptr<Curve>& a, const shared_ptr<Curve>& b) {
-        return a->radius() < b->radius();
+    sort(vCircle.begin(), vCircle.end(), [](const Circle* a, const Circle* b) {
+        if (a && b) {
+            return a->radius() < b->radius();
+        } else return false;
     });
 
     double sum = 0.0;
 #pragma omp parallel for reduction(+:sum)
     for (size_t i = 0; i < vCircle.size(); ++i) {
-        sum += vCircle[i]->radius();
+        auto pCircle = vCircle[i];
+        if (pCircle) {
+            sum += pCircle->radius();
+        }
     }
 
     cout << std::fixed << std::setprecision(2)

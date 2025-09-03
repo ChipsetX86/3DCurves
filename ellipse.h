@@ -2,7 +2,6 @@
 #define ELLIPSE_H
 
 #include "curve.h"
-#include "point.h"
 
 namespace TDCurves {
 
@@ -10,16 +9,16 @@ class Ellipse : public Curve
 {
 public:
     Ellipse();
-    virtual ~Ellipse();
+    ~Ellipse();
 
-    bool setRadius2(const double radius);
+    bool setRadiusOX(const double radius);
+    bool setRadiusOY(const double radius);
 
-    virtual Point value(const double t);
-    virtual Point derivative(const double t);
+    Point value(const double t) override;
+    Vector derivative(const double t) override;
 private:
-    double m_radius2 = 0;
-    double a();
-    double b();
+    double m_radiusOX = 0;
+    double m_radiusOY = 0;
 };
 
 }

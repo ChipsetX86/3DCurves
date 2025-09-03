@@ -2,7 +2,6 @@
 #define CIRCLE_H
 
 #include "curve.h"
-#include "point.h"
 
 namespace TDCurves {
 
@@ -10,12 +9,15 @@ class Circle: public Curve
 {
 public:
     Circle();
-    virtual ~Circle();
+    ~Circle();
 
-    virtual Point value(const double t);
-    virtual Point derivative(const double t);
+    bool setRadius(const double radius);
+    double radius() const;
+
+    Point value(const double t) override;
+    Vector derivative(const double t) override;
 private:
-
+    double m_radius = 0;
 };
 
 }

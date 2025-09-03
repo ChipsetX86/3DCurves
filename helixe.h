@@ -9,13 +9,16 @@ class Helixe : public Curve
 {
 public:
     Helixe();
-    virtual ~Helixe();
+    ~Helixe();
 
+    bool setRadius(const double radius);
+    double radius() const;
     bool setStep(const double step);
 
-    virtual Point value(const double t);
-    virtual Point derivative(const double t);
+    Point value(const double t) override;
+    Vector derivative(const double t) override;
 private:
+    double m_radius = 0;
     double m_step = 0;
 };
 

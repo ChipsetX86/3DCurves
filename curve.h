@@ -1,7 +1,7 @@
 #ifndef CURVE_H
 #define CURVE_H
 
-#include "point.h"
+#include "utils.h"
 
 namespace TDCurves {
 
@@ -11,15 +11,8 @@ public:
     Curve();
     virtual ~Curve();
 
-    bool setRadius(const double radius);
-    double radius() const;
-
     virtual Point value(const double t) = 0;
-    virtual Point derivative(const double t) = 0;
-
-private:
-    double m_radius = 0;
-    Point m_x, m_y;
+    virtual Vector derivative(const double t) = 0;
 };
 
 }
